@@ -17,24 +17,83 @@ function addBookToLibrary(title, author, pages, read) {
 }
 
 function displayLibrary() {
-	myLibrary = JSON.parse(localStorage.getItem('library'));
-	myLibrary.forEach(book => {
-		libraryContainer.innerHTML += `<div class="book">
+	deleteButtons = document.querySelectorAll('[data-book-delete]');
+	readButtons = document.querySelectorAll('[data-book-read]');
+	if (localStorage.length > 0) {
+		libraryContainer.innerHTML = "";
+		myLibrary = JSON.parse(localStorage.getItem('library'));
+		let index = 0;
+		myLibrary.forEach(book => {
+			let bookButton = (book.read == 'Read') ? 'Unread' : 'Read';
+			libraryContainer.innerHTML += `<div class="book" data-index-number="${index}">
 			<h2 class="text-center">${book.title}</h2>
-			<h3 class="text-center">${book.author}</h3>
+			<h3 class="text-center">by ${book.author}</h3>
 			<p class="text-center"><strong>Pages: ${book.pages}</strong></p>
 			<h2 class="text-center">${book.read}</h2>
-		</div>`;
-	});
+			<div class="buttons">
+			<button data-book-delete data-id="${index}" class="delete-button">Delete</button>
+			<button data-book-read data-id="${index}" class="read-button">${bookButton}</button>
+			</div>
+			</div>`;
+			index++;
+		});
+		bookButtonsEventBuilder();
+	} else {
+		const modal = document.getElementById('modal');
+		openModal(modal);
+	}	
 }
 
 function displayNewBook(obj) {
-	libraryContainer.innerHTML += `<div class="book">
+	let bookButton = (obj.read == 'Read') ? 'Unread' : 'Read';
+	libraryContainer.innerHTML += `<div class="book" data-index-number="${myLibrary.length - 1}">
 		<h2 class="text-center">${obj.title}</h2>
-		<h3 class="text-center">${obj.author}</h3>
+		<h3 class="text-center">by ${obj.author}</h3>
 		<p class="text-center"><strong>Pages: ${obj.pages}</strong></p>
 		<h2 class="text-center">${obj.read}</h2>
+		<div class="buttons">
+				<button data-book-delete data-id="${myLibrary.length - 1}" class="delete-button">Delete</button>
+				<button data-book-read data-id="${myLibrary.length -1}" class="read-button">${bookButton}</button>
+			</div>
 	</div>`;
+	bookButtonsEventBuilder();
+}
+
+function deleteBook(id) {
+	if (myLibrary.length > 1) {
+		myLibrary.splice(id, 1);
+		localStorage.setItem('library', JSON.stringify(myLibrary));
+	} else {
+		localStorage.clear();
+		libraryContainer.innerHTML = "";
+	}
+	displayLibrary();
+}
+
+function readUnread(id, read) {
+	myLibrary[id].read = read;
+	localStorage.setItem('library', JSON.stringify(myLibrary));
+	displayLibrary();
+}
+
+function bookButtonsEventBuilder() {
+	let deleteButtons = document.querySelectorAll('[data-book-delete]');
+	let readButtons = document.querySelectorAll('[data-book-read]');
+
+	deleteButtons.forEach(button => {
+		button.addEventListener('click', () => {
+			let id = button.getAttribute('data-id');
+			deleteBook(id);
+		});
+	});
+
+	readButtons.forEach(button => {
+		button.addEventListener('click', () => {
+			let id = button.getAttribute('data-id');
+			let read = button.innerHTML;
+			readUnread(id, read);
+		});
+	});
 }
 
 const openModalButtons = document.querySelectorAll('[data-modal-target]');
@@ -75,9 +134,13 @@ form.addEventListener('submit', (e) => {
 		data[key] = value;
 	});
 	checkbox.checked ? data.read = 'Read' : data.read = 'Unread';
+	const modals = document.querySelectorAll('.modal.active');
+	modals.forEach(modal => {
+		closeModal(modal);
+	});
 	addBookToLibrary(data.title, data.author, data.pages, data.read);
 	displayNewBook(data);
-	console.log(myLibrary);
+	form.reset();
 });
 
 function openModal(modal) {
