@@ -1,4 +1,4 @@
-let myLibrary = [];
+let myLibrary = [{title: 'New Book', author: 'This Guy', pages: 123, read: 'Read'}];
 
 function Book(title, author, pages, read) {
 	this.title = title
@@ -16,13 +16,22 @@ function addBookToLibrary(title, author, pages, read) {
 }
 
 function displayLibrary() {
-	
+	console.log(libraryContainer);
+	myLibrary.forEach(book => {
+		libraryContainer.innerHTML += `<div class="book">
+			<h2 class="text-center">${book.title}</h2>
+			<h3 class="text-center">${book.author}</h3>
+			<p class="text-center"><strong>Pages: ${book.pages}</strong></p>
+			<h2 class="text-center">${book.read}</h2>
+		</div>`;
+	});
 }
 
 const openModalButtons = document.querySelectorAll('[data-modal-target]');
 const closeModalButtons = document.querySelectorAll('[data-modal-close]');
 const overlay = document.getElementById('overlay');
-const submitButton = document.getElementById('submit-button');
+const form = document.getElementById('add-book-form');
+const libraryContainer = document.getElementById('library');
 
 openModalButtons.forEach(button => {
 	button.addEventListener('click', () => {
@@ -42,7 +51,22 @@ overlay.addEventListener('click', () => {
 	const modals = document.querySelectorAll('.modal.active');
 	modals.forEach(modal => {
 		closeModal(modal);
-	})
+	});
+});
+
+form.addEventListener('submit', (e) => {
+	e.preventDefault();
+	const data = {};
+	const inputs = document.querySelectorAll('input[type="text"], input[type="number"]');
+	const checkbox = document.querySelector('input[type="checkbox"]');
+	inputs.forEach(input => {
+		let key = input.name;
+		let value = input.value;
+		data[key] = value;
+	});
+	checkbox.checked ? data.read = 'Read' : data.read = 'Unread';
+	addBookToLibrary(data.title, data.author, data.pages, data.read);
+	console.log(myLibrary);
 });
 
 function openModal(modal) {
@@ -56,3 +80,5 @@ function closeModal(modal) {
 	modal.classList.remove('active');
 	overlay.classList.remove('active');
 }
+
+displayLibrary();

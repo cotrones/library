@@ -13,16 +13,20 @@
 	<div class="buttons">
 		<button data-modal-target="#modal" id="add-book">Add Book &plus;</button>
 	</div>
-	<div class="library">
+	<div class="library" id="library">
 		<div class="book">
 			<h2 class="text-center">Book Title this one is too long to fit one line</h2>
 			<h3 class="text-center">Author Name</h3>
+			<p class="text-center"><strong>Pages: </strong></p>
+			<h2 class="text-center">Read</h2>
+			<div class="buttons">
+			</div>
 		</div>
+		<!-- <div class="book"></div>
 		<div class="book"></div>
 		<div class="book"></div>
 		<div class="book"></div>
-		<div class="book"></div>
-		<div class="book"></div>
+		<div class="book"></div> -->
 	</div>
 
 	<div class="modal active" id="modal">
@@ -31,7 +35,7 @@
 			<button data-modal-close class="close-modal">&times;</button>
 		</div>
 		<div class="modal-body">
-			<form action="">
+			<form action="" id="add-book-form">
 				<div class="form-row">
 					<label for="title" class="form-label">Title:</label>
 					<input id="title" name="title" type="text" class="form-input" required></input>
