@@ -1,4 +1,4 @@
-let myLibrary = [{title: 'New Book', author: 'This Guy', pages: 123, read: 'Read'}];
+let myLibrary = [];
 
 function Book(title, author, pages, read) {
 	this.title = title
@@ -13,10 +13,11 @@ function Book(title, author, pages, read) {
 function addBookToLibrary(title, author, pages, read) {
 	let book = new Book(title, author, pages, read);
 	myLibrary.push(book);
+	localStorage.setItem('library', JSON.stringify(myLibrary));
 }
 
 function displayLibrary() {
-	console.log(libraryContainer);
+	myLibrary = JSON.parse(localStorage.getItem('library'));
 	myLibrary.forEach(book => {
 		libraryContainer.innerHTML += `<div class="book">
 			<h2 class="text-center">${book.title}</h2>
@@ -25,6 +26,15 @@ function displayLibrary() {
 			<h2 class="text-center">${book.read}</h2>
 		</div>`;
 	});
+}
+
+function displayNewBook(obj) {
+	libraryContainer.innerHTML += `<div class="book">
+		<h2 class="text-center">${obj.title}</h2>
+		<h3 class="text-center">${obj.author}</h3>
+		<p class="text-center"><strong>Pages: ${obj.pages}</strong></p>
+		<h2 class="text-center">${obj.read}</h2>
+	</div>`;
 }
 
 const openModalButtons = document.querySelectorAll('[data-modal-target]');
@@ -66,6 +76,7 @@ form.addEventListener('submit', (e) => {
 	});
 	checkbox.checked ? data.read = 'Read' : data.read = 'Unread';
 	addBookToLibrary(data.title, data.author, data.pages, data.read);
+	displayNewBook(data);
 	console.log(myLibrary);
 });
 
