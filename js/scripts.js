@@ -17,8 +17,6 @@ function addBookToLibrary(title, author, pages, read) {
 }
 
 function displayLibrary() {
-	deleteButtons = document.querySelectorAll('[data-book-delete]');
-	readButtons = document.querySelectorAll('[data-book-read]');
 	if (localStorage.length > 0) {
 		libraryContainer.innerHTML = "";
 		myLibrary = JSON.parse(localStorage.getItem('library'));
@@ -96,6 +94,18 @@ function bookButtonsEventBuilder() {
 	});
 }
 
+function openModal(modal) {
+	if (modal == null) return;
+	modal.classList.add('active');
+	overlay.classList.add('active');
+}
+
+function closeModal(modal) {
+	if (modal == null) return;
+	modal.classList.remove('active');
+	overlay.classList.remove('active');
+}
+
 const openModalButtons = document.querySelectorAll('[data-modal-target]');
 const closeModalButtons = document.querySelectorAll('[data-modal-close]');
 const overlay = document.getElementById('overlay');
@@ -142,17 +152,5 @@ form.addEventListener('submit', (e) => {
 	displayNewBook(data);
 	form.reset();
 });
-
-function openModal(modal) {
-	if (modal == null) return;
-	modal.classList.add('active');
-	overlay.classList.add('active');
-}
-
-function closeModal(modal) {
-	if (modal == null) return;
-	modal.classList.remove('active');
-	overlay.classList.remove('active');
-}
 
 displayLibrary();
